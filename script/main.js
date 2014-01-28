@@ -68,6 +68,34 @@ $(function() {
     radioClass: 'iradio_flat-grey'
   });
 
+  var auth0 = new Auth0({
+    domain:         'todos.auth0.com',
+    clientID:       'yy16wGKzQMzkZ1rwT0bjrLQ7ngBBtmPh',
+    callbackURL:    'http://auth0.github.io/ubersicht',
+    callbackOnLocationHash: true
+  });
+
+  var token;
+
+  $('#signin').click(function (e) {
+    e.preventDefault();
+    auth0.login({connection: 'github', state: githubOrganisation});
+  });
+
+  auth0.parseHash(window.location.hash, function (profile, id_token, access_token, state) {
+    window.location.hash = state;
+    $.cookie('profile', JSON.stringify(profile), { expires: 7 });
+  });
+
+  var profile = $.cookie('profile');
+
+  if (profile) {
+    profile = JSON.parse(profile);
+    token = profile.identities[0].access_token;
+    $('#signedin').show().html('hello ' + profile.nickname);
+    $('#signin').hide();
+  }
+
   // Events
 
   // Check if browser supports the hash change event
@@ -143,6 +171,10 @@ $(function() {
       if (filters.state) {
         query += '+state:' + filters.state;
       }
+    }
+
+    if (token) {
+      query += '&access_token=' + token;
     }
 
     // Cache for quick development
