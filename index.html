@@ -15,7 +15,12 @@
   <header>
     <div class="info">
       <h1 class="title"><strong>Ubersicht</strong></h1>
-      <h6>Made by <a href="http://hood.ie">team Hoodie</a> with love. <a href="https://www.gittip.com/hoodiehq/">Leave a tip</a> or <a href="https://github.com/espy/ubersicht">fork this</a>.</h6>
+      <h6>Made by <a href="http://hood.ie">team Hoodie</a> with love. <a href="https://www.gittip.com/hoodiehq/">Leave a tip</a> or <a href="https://github.com/espy/ubersicht">fork this</a>.
+        <br />
+        <span id="signin"><a style="color: green;" href="#">Sign in</a> to see private repositories.</span>
+        <span id="signedin" style="display: none;"></span>
+        <span id="signout" style="display: none;"><a style="color: green;" href="#">Sign out</a></span>
+      </h6>
     </div>
     <div class="statusIndicators"></div>
   </header>
@@ -158,6 +163,10 @@
   <script src="bower_components/jquery-icheck/icheck.min.js"></script>
   <script src="bower_components/jquery-timeago/jquery.timeago.js"></script>
   <script src="bower_components/icanhazjs/ICanHaz.min.js"></script>
+
+  <script src="//d19p4zemcycm7a.cloudfront.net/w2/auth0-1.2.2.min.js"></script>
+  <script src="//cdn.jsdelivr.net/jquery.cookie/1.4.0/jquery.cookie.min.js"></script>
+
   <script src="script/main.js"></script>
   <script type="text/javascript">
    var _gauges = _gauges || [];

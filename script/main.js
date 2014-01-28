@@ -20,6 +20,45 @@
  */
 
 $(function() {
+  var auth0 = new Auth0({
+    domain:         'todos.auth0.com',
+    clientID:       'yy16wGKzQMzkZ1rwT0bjrLQ7ngBBtmPh',
+    callbackURL:    window.location.href.split('#')[0], //'http://auth0.github.io/ubersicht',
+    callbackOnLocationHash: true
+  });
+
+  var token;
+
+  $('#signin a').click(function (e) {
+    e.preventDefault();
+    auth0.login({connection: 'github', state: githubOrganisation});
+  });
+
+  $('#signout a').click(function (e) {
+    e.preventDefault();
+    $.removeCookie('profile');
+    window.location.reload();
+  });
+
+  auth0.parseHash(window.location.hash, function (profile, id_token, access_token, state) {
+    window.location.hash = state;
+    $.cookie('profile', JSON.stringify(profile), { expires: 7 });
+  });
+
+  if (/id_token/.exec(window.location.hash)) {
+    return;
+  }
+
+  var profile = $.cookie('profile');
+
+  if (profile) {
+    profile = JSON.parse(profile);
+    token = profile.identities[0].access_token;
+    $('#signedin').show().html('hello ' + profile.nickname);
+    $('#signin').hide();
+    $('#signout').show();
+  }
+
   // The github user or organisation you'd like to load issues for
   // Defaults to hoodiehq!
   var githubOrganisation = 'hoodiehq';
@@ -42,7 +81,7 @@ $(function() {
 
   // Fetch the hash value from the url
   function useHash(){
-    if(window.location.hash != ""){
+    if(window.location.hash !== ""){
       githubOrganisation = window.location.hash.substr(1);
     } else {
       window.location.hash = githubOrganisation;
@@ -143,6 +182,10 @@ $(function() {
       if (filters.state) {
         query += '+state:' + filters.state;
       }
+    }
+
+    if (token) {
+      query += '&access_token=' + token;
     }
 
     // Cache for quick development
